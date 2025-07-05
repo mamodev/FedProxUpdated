@@ -8,6 +8,8 @@ Link to the original code: [litian96/FedProx](https://github.com/litian96/FedPro
 
 # How to run the code
 
+### Building the docker image
+
 In order to make the code easely to run I created a `DockerFile` that setup everything needed to run the code.
 In order to make the docker image works you will need to have `nvida gpu drivers` and `nvidia-container-toolkit` installed on your host machine.
 
@@ -30,6 +32,8 @@ To build the docker image you can run the following command in the root of the r
 docker build -t fedprox .
 ```
 
+### Running the docker image
+
 It can be usefull to create persistent storage in order to save the results of tests.
 to do this you can create a local folder called .shared 
 
@@ -44,6 +48,39 @@ or with a shared folder with the following command:
 ```bash
 docker run -it --gpus all --rm -v $(pwd)/.shared:/root/FedProx/.shared fedprox
 ```
+
+### Running tests automatically
+
+In the patches folder i provided utility scripts to run the tests automatically. 
+
+To test if all is working correctly you can run the following command:
+(all commands are to be run inside the docker container in `/root/FedProx` folder)
+
+```bash
+./test_run.sh
+```
+
+To automatically run all the synthetic tests of the paper you can run the following command:
+```bash
+./synth_run.sh
+```
+
+
+# Code patches
+
+The original code had a mechanism to gather metrics and save them in a file, but it was incomplete and not working.
+I added a patch (which you can find in the `patches` folder) that fixes the issue and allows to save the metrics in a file.
+as default the metrics are saved in the `.shared` folder. (this is to easily access the results from the host machine and to work seamlessly with the docker container volume).
+
+### How to create a patch 
+
+To patch a file from the original code you just need to add the new file in the `patches` folder and rebuild the docker image.
+
+for exampl to fix the fedprox trainer you create a file `patches/flearn/trainers/fedprox.py` 
+that file will replace the original file `flearn/trainers/fedprox.py` in the original code.
+
+you can also add new files and folders in the `patches` folder and they will be copied in the original code.
+
 
 # Notes for manually running the code
 
