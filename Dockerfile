@@ -67,9 +67,11 @@ RUN pyenv install $PYTHON_VERSION && \
 
 
 COPY ./cudnn-10.0-linux-x64-v7.3.0.29.tgz /tmp/cudnn.tgz
-RUN cd /tmp && tar -xf /tmp/cudnn.tgz && cp -P cuda/include/* /usr/local/cuda-10.0/include/ &n& cp -P cuda/lib64/* /usr/local/cuda-10.0/lib64/ && \
+RUN cd /tmp && tar -xf /tmp/cudnn.tgz && cp -P cuda/include/* /usr/local/cuda-10.0/include/ && cp -P cuda/lib64/* /usr/local/cuda-10.0/lib64/ && \
     rm -rf /tmp/cudnn.tgz /tmp/cuda
 
+
+RUN apt-get install -y --no-install-recommends rsync vim
 
 # create python virtual environment
 COPY requirements.txt /root/requirements.txt
@@ -81,5 +83,10 @@ RUN cd /root &&  python3 -m venv .venv && \
      pip install -r ./requirements.txt
 
 RUN git clone https://github.com/litian96/FedProx.git /root/FedProx && chmod +x /root/FedProx/run_fedavg.sh &&  chmod +x /root/FedProx/run_fedprox.sh
+
+
+COPY ./patches /tmp/patches_staging/
+RUN rsync -av /tmp/patches_staging/ /root/FedProx/ && \
+        rm -rf /tmp/patches_staging/
 
 CMD ["/bin/bash", "-c", "source /root/.venv/bin/activate && cd /root/FedProx && exec bash"]

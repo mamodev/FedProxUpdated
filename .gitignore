@@ -1,3 +1,4 @@
 .venv
 cudnn-10.0-linux-x64-v7.3.0.29.tgz
 FedProx
+.shared

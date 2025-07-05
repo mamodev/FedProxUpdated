@@ -30,6 +30,20 @@ To build the docker image you can run the following command in the root of the r
 docker build -t fedprox .
 ```
 
+It can be usefull to create persistent storage in order to save the results of tests.
+to do this you can create a local folder called .shared 
+
+you can run container with no shared folder with the following command:
+
+```bash
+docker run -it --gpus all --rm fedprox
+```
+
+or with a shared folder with the following command:
+
+```bash
+docker run -it --gpus all --rm -v $(pwd)/.shared:/root/FedProx/.shared fedprox
+```
 
 # Notes for manually running the code
 
